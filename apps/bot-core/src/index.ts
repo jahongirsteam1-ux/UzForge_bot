@@ -37,6 +37,13 @@ const start = async () => {
     fastify.log.info("Connected to MongoDB");
 
     if (process.env.BOT_TOKEN && process.env.BOT_TOKEN !== "test_token") {
+      try {
+        await bot.api.deleteWebhook({ drop_pending_updates: true });
+        fastify.log.info("Webhook dropped for main bot, starting long polling...");
+      } catch (e) {
+        fastify.log.warn("Failed to drop webhook, maybe it was not set.");
+      }
+
       bot.start({
         onStart: (botInfo) => {
           fastify.log.info(`Bot @${botInfo.username} started`);
