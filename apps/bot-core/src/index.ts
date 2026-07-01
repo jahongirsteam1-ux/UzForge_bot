@@ -58,7 +58,7 @@ const start = async () => {
     await fastify.listen({ port, host: '0.0.0.0' });
     fastify.log.info(`Server is running on port ${port}`);
   } catch (err) {
-    fastify.log.error("Failed to start HTTP server:", err);
+    fastify.log.error(`Failed to start HTTP server: ${err}`);
     process.exit(1);
   }
 
@@ -68,7 +68,7 @@ const start = async () => {
     await mongoose.connect(uri);
     fastify.log.info("Connected to MongoDB");
   } catch (err) {
-    fastify.log.error("MongoDB connection failed (non-fatal):", err);
+    fastify.log.error(`MongoDB connection failed (non-fatal): ${err}`);
     // MongoDB ishlamasa ham server yiqilmasin!
     return;
   }
