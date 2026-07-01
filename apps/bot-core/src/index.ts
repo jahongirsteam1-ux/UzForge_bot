@@ -3,6 +3,7 @@ import fastifyStatic from "@fastify/static";
 import mongoose from "mongoose";
 import * as dotenv from "dotenv";
 import path from "path";
+import fs from "fs";
 import { webhookCallback } from "grammy";
 import { bot } from "./bot";
 import { botRegistry } from "./registry";
@@ -17,10 +18,24 @@ fastify.get("/health", async () => {
   return { status: "ok" };
 });
 
-fastify.register(fastifyStatic, {
-  root: path.join(__dirname, "../../../apps/miniapp/dist"),
-  prefix: "/",
-});
+const miniappPath = path.join(__dirname, "../../../apps/miniapp/dist");
+if (fs.existsSync(miniappPath)) {
+  fastify.register(fastifyStatic, {
+    root: miniappPath,
+    prefix: "/",
+  });
+  fastify.log.info(`Serving miniapp from ${miniappPath}`);
+} else {
+  fastify.log.warn(`Miniapp dist not found at ${miniappPath}`);
+  fastify.get("/", async () => {
+    return { 
+      status: "UzForge Bot Core API is running", 
+      error: "Miniapp dist not found",
+      __dirname,
+      miniappPath
+    };
+  });
+}
 
 // Dinamik webhook router
 fastify.post("/webhook/:botId", async (request, reply) => {
