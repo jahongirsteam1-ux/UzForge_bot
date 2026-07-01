@@ -1,0 +1,25 @@
+{
+  "name": "@uzforge/bot-core",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts"
+  },
+  "dependencies": {
+    "fastify": "^4.26.2",
+    "mongoose": "^8.3.0",
+    "grammy": "^1.21.1",
+    "bullmq": "^5.7.0",
+    "dotenv": "^16.4.5",
+    "zod": "^3.23.4",
+    "ioredis": "^5.3.2",
+    "@uzforge/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "ts-node": "^10.9.2",
+    "@types/node": "^20.12.7"
+  }
+}

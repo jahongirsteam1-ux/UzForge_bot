@@ -1,0 +1,19 @@
+{
+  "name": "uzforge",
+  "version": "1.0.0",
+  "private": true,
+  "description": "UzForge Telegram Bot Builder SaaS",
+  "scripts": {
+    "dev:bot-core": "pnpm --filter bot-core run dev",
+    "dev:miniapp": "pnpm --filter miniapp run dev",
+    "dev:admin": "pnpm --filter admin run dev",
+    "build:shared": "pnpm --filter shared run build",
+    "build": "pnpm -r run build",
+    "lint": "pnpm -r run lint"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "eslint": "^9.0.0",
+    "prettier": "^3.2.5"
+  }
+}
