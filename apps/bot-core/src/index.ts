@@ -65,7 +65,7 @@ const start = async () => {
     }
 
     const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
-    await fastify.listen({ port, host: '0.0.0.0' });
+    await fastify.listen({ port, host: '::' });
     fastify.log.info(`Server is running on port ${port}`);
   } catch (err) {
     fastify.log.error(err);
