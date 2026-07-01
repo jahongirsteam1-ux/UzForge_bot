@@ -48,8 +48,9 @@ const start = async () => {
       fastify.log.warn("BOT_TOKEN is not set properly, bot will not start");
     }
 
-    await fastify.listen({ port: 3000, host: '0.0.0.0' });
-    fastify.log.info("Server is running on port 3000");
+    const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
+    await fastify.listen({ port, host: '0.0.0.0' });
+    fastify.log.info(`Server is running on port ${port}`);
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);
