@@ -1,4 +1,5 @@
 import Fastify from "fastify";
+import fastifyStatic from "@fastify/static";
 import mongoose from "mongoose";
 import * as dotenv from "dotenv";
 import path from "path";
@@ -16,8 +17,9 @@ fastify.get("/health", async () => {
   return { status: "ok" };
 });
 
-fastify.get("/", async () => {
-  return { status: "UzForge Bot Core API is running" };
+fastify.register(fastifyStatic, {
+  root: path.join(__dirname, "../../../apps/miniapp/dist"),
+  prefix: "/",
 });
 
 // Dinamik webhook router
