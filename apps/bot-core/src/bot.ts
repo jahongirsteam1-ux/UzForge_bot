@@ -1,4 +1,4 @@
-import { Bot, InlineKeyboard } from "grammy";
+import { Bot, Keyboard } from "grammy";
 import { User } from "@uzforge/shared";
 import * as dotenv from "dotenv";
 import path from "path";
@@ -33,24 +33,27 @@ bot.command("start", async (ctx) => {
     await user.save();
   }
 
-  const keyboard = new InlineKeyboard()
-    .text("🤖 Bot yaratish", "create_bot")
-    .text("📦 Botlarim", "my_bots").row()
-    .text("🎁 Referal", "referral")
-    .text("💳 Hisob to'ldirish", "deposit").row()
+  const keyboard = new Keyboard()
+    .text("🤖 Bot yaratish")
+    .text("📦 Botlarim").row()
+    .text("🎁 Referal")
+    .text("💳 Hisob to'ldirish").row()
     .webApp("🌐 Mini App'ni ochish", process.env.WEBHOOK_BASE_URL || "https://example.com").row()
-    .text("📚 Qo'llanma", "help")
-    .text("✉️ Murojaat", "support").row()
-    .text("🛒 Shablonlar do'koni", "store")
-    .text("📊 Statistika", "stats").row()
-    .text("📲 Shaxsiy kabinet", "profile");
+    .text("📚 Qo'llanma")
+    .text("✉️ Murojaat").row()
+    .text("🛒 Shablonlar do'koni")
+    .text("📊 Statistika").row()
+    .text("📲 Shaxsiy kabinet")
+    .resized();
 
   await ctx.reply(`Assalomu alaykum, ${firstName}! UzForge bot yaratish platformasiga xush kelibsiz.`, {
     reply_markup: keyboard
   });
 });
 
-bot.on("callback_query:data", async (ctx) => {
-  await ctx.answerCallbackQuery();
-  await ctx.reply("Bu bo'lim tez orada ishga tushadi!");
+bot.on("message:text", async (ctx) => {
+  const text = ctx.message.text;
+  if (["🤖 Bot yaratish", "📦 Botlarim", "🎁 Referal", "💳 Hisob to'ldirish", "📚 Qo'llanma", "✉️ Murojaat", "🛒 Shablonlar do'koni", "📊 Statistika", "📲 Shaxsiy kabinet"].includes(text)) {
+    await ctx.reply("Bu bo'lim tez orada ishga tushadi!");
+  }
 });
