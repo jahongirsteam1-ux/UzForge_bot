@@ -7,7 +7,7 @@ import { bot } from "./bot";
 import { botRegistry } from "./registry";
 import { startListenerBot } from "./listener";
 import { MINIAPP_HTML } from "./miniapp";
-import "./worker"; // worker ishga tushishi uchun
+// NOTE: worker is imported lazily after MongoDB connects to avoid Redis crash on boot
 
 dotenv.config({ path: path.join(__dirname, "../../../.env") });
 
@@ -52,6 +52,14 @@ const start = async () => {
     const uri = process.env.MONGODB_URI || "mongodb://localhost:27017/uzforge";
     await mongoose.connect(uri);
     fastify.log.info("Connected to MongoDB");
+
+    // Worker'ni faqat MongoDB tayyor bo'lgandan keyin import qilamiz (Redis crash'ini oldini olish uchun)
+    if (process.env.REDIS_URL) {
+      await import("./worker");
+      fastify.log.info("Worker started");
+    } else {
+      fastify.log.warn("REDIS_URL not set, worker will not start");
+    }
   } catch (err) {
     fastify.log.error(`MongoDB connection failed (non-fatal): ${err}`);
     // MongoDB ishlamasa ham server yiqilmasin!
