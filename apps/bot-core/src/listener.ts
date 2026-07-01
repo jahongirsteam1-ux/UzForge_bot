@@ -51,9 +51,15 @@ export const startListenerBot = () => {
         }
     });
 
-    listenerBot.start({
-        onStart: (botInfo) => {
-            console.log(`Listener Bot @${botInfo.username} started`);
+    const startPolling = async () => {
+        try {
+            await listenerBot.start({
+                onStart: (botInfo) => console.log(`Listener Bot @${botInfo.username} started`)
+            });
+        } catch (err) {
+            console.error(`Listener Bot Polling Conflict: ${err}. Retrying in 5s...`);
+            setTimeout(startPolling, 5000);
         }
-    });
+    };
+    startPolling();
 };
