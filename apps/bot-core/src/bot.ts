@@ -38,7 +38,7 @@ bot.command("start", async (ctx) => {
     .text("📦 Botlarim").row()
     .text("🎁 Referal")
     .text("💳 Hisob to'ldirish").row()
-    .webApp("🌐 Mini App'ni ochish", process.env.WEBHOOK_BASE_URL || "https://example.com").row()
+    .webApp("🌐 Mini App'ni ochish", process.env.MINI_APP_URL || "https://example.com").row()
     .text("📚 Qo'llanma")
     .text("✉️ Murojaat").row()
     .text("🛒 Shablonlar do'koni")
