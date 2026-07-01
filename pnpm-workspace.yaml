@@ -5,3 +5,5 @@ allowBuilds:
   msgpackr-extract: set this to true or false
 minimumReleaseAgeExclude:
   - vite@8.1.1
+overrides:
+  ioredis: 5.10.1
