@@ -43,8 +43,11 @@ const start = async () => {
     fastify.log.info("Connected to MongoDB");
 
     if (process.env.BOT_TOKEN && process.env.BOT_TOKEN !== "test_token") {
-      const webhookDomain = process.env.WEBHOOK_BASE_URL;
+      let webhookDomain = process.env.WEBHOOK_BASE_URL;
       if (webhookDomain) {
+        if (!webhookDomain.startsWith("http")) {
+          webhookDomain = `https://${webhookDomain}`;
+        }
         const webhookUrl = `${webhookDomain}/webhook/main`;
         try {
           await bot.api.setWebhook(webhookUrl, { drop_pending_updates: true });
