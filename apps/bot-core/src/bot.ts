@@ -1,12 +1,12 @@
-import { Bot, Keyboard } from "grammy";
-import { User } from "@uzforge/shared";
+import { Bot as GrammyBot, Keyboard } from "grammy";
+import { User, Bot as DBBot } from "@uzforge/shared";
 import * as dotenv from "dotenv";
 import path from "path";
 
 dotenv.config({ path: path.join(__dirname, "../../../.env") });
 
 const token = process.env.BOT_TOKEN || "test_token";
-export const bot = new Bot(token);
+export const bot = new GrammyBot(token);
 
 bot.command("start", async (ctx) => {
   if (!ctx.from) return;
@@ -65,12 +65,12 @@ bot.on("message:text", async (ctx) => {
       break;
 
     case "📦 Botlarim": {
-      const bots = await Bot.find({ ownerId: telegramId });
+      const bots = await DBBot.find({ ownerId: telegramId });
       if (bots.length === 0) {
         await ctx.reply("Sizda hozircha faol botlar yo'q. Yangi bot yaratish uchun <b>🤖 Bot yaratish</b> bo'limiga o'ting.", { parse_mode: "HTML" });
       } else {
         let msg = "<b>Sizning botlaringiz:</b>\n\n";
-        bots.forEach((b, i) => {
+        bots.forEach((b: any, i: number) => {
           msg += `${i + 1}. @${b.botUsername} - Status: <b>${b.status}</b>\n`;
         });
         await ctx.reply(msg, { parse_mode: "HTML" });
@@ -103,7 +103,7 @@ bot.on("message:text", async (ctx) => {
 
     case "📊 Statistika": {
       const totalUsers = await User.countDocuments();
-      const totalBots = await Bot.countDocuments();
+      const totalBots = await DBBot.countDocuments();
       await ctx.reply(`<b>📊 UzForge Umumiy Statistikasi:</b>\n\n👥 Jami foydalanuvchilar: <b>${totalUsers}</b> ta\n🤖 Jami botlar: <b>${totalBots}</b> ta`, { parse_mode: "HTML" });
       break;
     }
