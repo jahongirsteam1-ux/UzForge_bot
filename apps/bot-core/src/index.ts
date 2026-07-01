@@ -16,6 +16,10 @@ fastify.get("/health", async () => {
   return { status: "ok" };
 });
 
+fastify.get("/", async () => {
+  return { status: "UzForge Bot Core API is running" };
+});
+
 // Dinamik webhook router
 fastify.post("/webhook/:botId", async (request, reply) => {
   const { botId } = request.params as { botId: string };
@@ -65,7 +69,7 @@ const start = async () => {
     }
 
     const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
-    await fastify.listen({ port, host: '::' });
+    await fastify.listen({ port, host: '0.0.0.0' });
     fastify.log.info(`Server is running on port ${port}`);
   } catch (err) {
     fastify.log.error(err);
