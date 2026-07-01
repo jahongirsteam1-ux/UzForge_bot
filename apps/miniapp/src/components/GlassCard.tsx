@@ -1,13 +1,13 @@
-import React from 'react';
+import type { FC, ReactNode } from 'react';
 
 interface GlassCardProps {
   title?: string;
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   delay?: number;
 }
 
-export const GlassCard: React.FC<GlassCardProps> = ({ title, children, className = '', delay = 0 }) => {
+export const GlassCard: FC<GlassCardProps> = ({ title, children, className = '', delay = 0 }) => {
   return (
     <div 
       className={`glass-panel animate-slide-up ${className}`} 

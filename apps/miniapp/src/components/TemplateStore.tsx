@@ -1,7 +1,7 @@
-import React from 'react';
+import type { FC } from 'react';
 import { GlassCard } from './GlassCard';
 
-export const TemplateStore: React.FC = () => {
+export const TemplateStore: FC = () => {
   const templates = [
     { name: 'Internet Do\'kon', desc: 'Sotuvlar va to\'lovlar tizimi bilan to\'liq do\'kon', price: 'Tekin', icon: '🛒' },
     { name: 'Murojaat Bot', desc: 'Mijozlar bilan aloqa, adminga xabar yuborish', price: 'Tekin', icon: '✉️' },

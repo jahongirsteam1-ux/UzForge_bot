@@ -1,7 +1,7 @@
-import React from 'react';
+import type { FC } from 'react';
 import { GlassCard } from './GlassCard';
 
-export const Dashboard: React.FC = () => {
+export const Dashboard: FC = () => {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center mb-2">

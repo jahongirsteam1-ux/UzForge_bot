@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Dashboard } from './components/Dashboard';
 import { TemplateStore } from './components/TemplateStore';
 import { GlassCard } from './components/GlassCard';
