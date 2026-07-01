@@ -2,7 +2,6 @@
   "name": "uzforge",
   "version": "1.0.0",
   "private": true,
-  "packageManager": "pnpm@11.9.0",
   "description": "UzForge Telegram Bot Builder SaaS",
   "scripts": {
     "dev:bot-core": "pnpm --filter bot-core run dev",
