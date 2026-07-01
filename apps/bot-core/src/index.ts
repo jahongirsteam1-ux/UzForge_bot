@@ -19,6 +19,12 @@ fastify.get("/health", async () => {
 // Dinamik webhook router
 fastify.post("/webhook/:botId", async (request, reply) => {
   const { botId } = request.params as { botId: string };
+  
+  // Asosiy bot uchun webhook
+  if (botId === "main") {
+    return webhookCallback(bot, "fastify")(request, reply);
+  }
+
   const subBot = botRegistry.getBot(botId);
 
   if (!subBot) {
@@ -37,18 +43,18 @@ const start = async () => {
     fastify.log.info("Connected to MongoDB");
 
     if (process.env.BOT_TOKEN && process.env.BOT_TOKEN !== "test_token") {
-      try {
-        await bot.api.deleteWebhook({ drop_pending_updates: true });
-        fastify.log.info("Webhook dropped for main bot, starting long polling...");
-      } catch (e) {
-        fastify.log.warn("Failed to drop webhook, maybe it was not set.");
-      }
-
-      bot.start({
-        onStart: (botInfo) => {
-          fastify.log.info(`Bot @${botInfo.username} started`);
+      const webhookDomain = process.env.WEBHOOK_BASE_URL;
+      if (webhookDomain) {
+        const webhookUrl = `${webhookDomain}/webhook/main`;
+        try {
+          await bot.api.setWebhook(webhookUrl, { drop_pending_updates: true });
+          fastify.log.info(`Webhook set for main bot: ${webhookUrl}`);
+        } catch (err) {
+          fastify.log.error(`Failed to set webhook: ${err}`);
         }
-      });
+      } else {
+        fastify.log.warn("WEBHOOK_BASE_URL is missing! Bot cannot receive updates.");
+      }
       // Listener botni ishga tushirish
       startListenerBot();
     } else {
