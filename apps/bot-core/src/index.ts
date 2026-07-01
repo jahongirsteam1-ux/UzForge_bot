@@ -1,13 +1,12 @@
 import Fastify from "fastify";
-import fastifyStatic from "@fastify/static";
 import mongoose from "mongoose";
 import * as dotenv from "dotenv";
 import path from "path";
-import fs from "fs";
 import { webhookCallback } from "grammy";
 import { bot } from "./bot";
 import { botRegistry } from "./registry";
 import { startListenerBot } from "./listener";
+import { MINIAPP_HTML } from "./miniapp";
 import "./worker"; // worker ishga tushishi uchun
 
 dotenv.config({ path: path.join(__dirname, "../../../.env") });
@@ -18,24 +17,10 @@ fastify.get("/health", async () => {
   return { status: "ok" };
 });
 
-const miniappPath = path.join(__dirname, "../../../apps/miniapp/dist");
-if (fs.existsSync(miniappPath)) {
-  fastify.register(fastifyStatic, {
-    root: miniappPath,
-    prefix: "/",
-  });
-  fastify.log.info(`Serving miniapp from ${miniappPath}`);
-} else {
-  fastify.log.warn(`Miniapp dist not found at ${miniappPath}`);
-  fastify.get("/", async () => {
-    return { 
-      status: "UzForge Bot Core API is running", 
-      error: "Miniapp dist not found",
-      __dirname,
-      miniappPath
-    };
-  });
-}
+// Mini App'ni to'g'ridan-to'g'ri HTML sifatida xizmat qilamiz (hech qanday fayl kerak emas)
+fastify.get("/", async (_req, reply) => {
+  return reply.type("text/html").send(MINIAPP_HTML);
+});
 
 // Dinamik webhook router
 fastify.post("/webhook/:botId", async (request, reply) => {
