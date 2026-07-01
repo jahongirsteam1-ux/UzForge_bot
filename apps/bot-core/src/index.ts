@@ -52,43 +52,51 @@ fastify.post("/webhook/:botId", async (request, reply) => {
 });
 
 const start = async () => {
+  // 1. HTTP serverni DARHOL ishga tushiramiz - Railway healthcheck shu yerga qo'shiladi
   try {
-    const uri = process.env.MONGODB_URI || "mongodb://localhost:27017/uzforge";
-    await mongoose.connect(uri);
-    fastify.log.info("Connected to MongoDB");
-
-    if (process.env.BOT_TOKEN && process.env.BOT_TOKEN !== "test_token") {
-      try {
-        await bot.api.deleteWebhook({ drop_pending_updates: true });
-        fastify.log.info("Webhook dropped for main bot, starting long polling...");
-      } catch (e) {
-        fastify.log.warn("Failed to drop webhook, maybe it was not set.");
-      }
-
-      const startMainBotPolling = async () => {
-        try {
-          await bot.start({
-            onStart: (botInfo) => fastify.log.info(`Bot @${botInfo.username} started`)
-          });
-        } catch (err) {
-          fastify.log.error(`Grammy Polling Conflict: ${err}. Retrying in 5s...`);
-          setTimeout(startMainBotPolling, 5000);
-        }
-      };
-      
-      startMainBotPolling();
-      // Listener botni ishga tushirish
-      startListenerBot();
-    } else {
-      fastify.log.warn("BOT_TOKEN is not set properly, bot will not start");
-    }
-
     const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
     await fastify.listen({ port, host: '0.0.0.0' });
     fastify.log.info(`Server is running on port ${port}`);
   } catch (err) {
-    fastify.log.error(err);
+    fastify.log.error("Failed to start HTTP server:", err);
     process.exit(1);
+  }
+
+  // 2. MongoDB ga ulanish (server allaqachon ishlamoqda, healthcheck o'tadi)
+  try {
+    const uri = process.env.MONGODB_URI || "mongodb://localhost:27017/uzforge";
+    await mongoose.connect(uri);
+    fastify.log.info("Connected to MongoDB");
+  } catch (err) {
+    fastify.log.error("MongoDB connection failed (non-fatal):", err);
+    // MongoDB ishlamasa ham server yiqilmasin!
+    return;
+  }
+
+  // 3. Botlarni ishga tushirish
+  if (process.env.BOT_TOKEN && process.env.BOT_TOKEN !== "test_token") {
+    try {
+      await bot.api.deleteWebhook({ drop_pending_updates: true });
+      fastify.log.info("Webhook dropped for main bot, starting long polling...");
+    } catch (e) {
+      fastify.log.warn("Failed to drop webhook, maybe it was not set.");
+    }
+
+    const startMainBotPolling = async () => {
+      try {
+        await bot.start({
+          onStart: (botInfo) => fastify.log.info(`Bot @${botInfo.username} started`)
+        });
+      } catch (err) {
+        fastify.log.error(`Grammy Polling Conflict: ${err}. Retrying in 5s...`);
+        setTimeout(startMainBotPolling, 5000);
+      }
+    };
+
+    startMainBotPolling();
+    startListenerBot();
+  } else {
+    fastify.log.warn("BOT_TOKEN is not set properly, bot will not start");
   }
 };
 
